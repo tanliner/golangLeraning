@@ -27,6 +27,15 @@ like C, `printf("this is a int %d", 100)`, in Go, `fmt.Printf(this is a int %d",
  	"net/http"
  )`
  
+
+ ### dep
+the package dependency, like gradle lib
+
  
- ### Node
+ ### Note
  the Go file name rule I do not know yet
+
+the file tree of Go not like Java
+src & bin & pkg
+
+the `src` is the All project source codes
