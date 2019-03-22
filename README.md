@@ -31,6 +31,33 @@ like C, `printf("this is a int %d", 100)`, in Go, `fmt.Printf(this is a int %d",
  ### dep
 the package dependency, like gradle lib
 
+### Nginx
+to review [this blog](https://www.jianshu.com/p/33d4a3fdc483) to check Nginx config
+
+append the extra virtual server below default server
+```
+    server {
+        listen       8080;
+        server_name  localhost;
+        location / {
+            root   html;
+            index  index.html index.htm;
+        }
+        error_page   500 502 503 504  /50x.html;
+        ...
+    }
+    // the request to 8091 will redirect to localhost:9090;
+    server {
+        listen 8091;
+        root   html;
+        index  index.html index.htm index.php;
+        ## send request back to apache ##
+        location / {
+            #go 服务器可以指定到其他的机器上，这里设定本机服务器
+            proxy_pass  http://localhost:9090;
+       }
+    }
+```
  
  ### Note
  the Go file name rule I do not know yet

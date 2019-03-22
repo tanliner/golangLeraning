@@ -1,4 +1,4 @@
-//main_test.go
+//router_test.go
 
 package main
 
@@ -29,7 +29,7 @@ func TestHandler(t *testing.T) {
 	recorder := httptest.NewRecorder()
 
 	// Create an HTTP handler from our handler function. "handler" is the handler
-	// function defined in our main.go file that we want to test
+	// function defined in our router.go file that we want to test
 	hf := http.HandlerFunc(handler)
 
 	// Serve the HTTP request to our recorder. This is the line that actually
