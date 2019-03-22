@@ -63,15 +63,36 @@ append the extra virtual server below default server
     }
 ```
 
-// some nginx command maybe useful
+Some nginx command maybe useful
 `nginx`
 `nginx -s stop`
 `nginx -s reload`
 `nginx -h`
 
  
- ### Note
- the Go file name rule I do not know yet
+### go https
+##### generate certificate file
+Key considerations for algorithm "RSA" ≥ 2048-bit<br/>
+```openssl genrsa -out server.key 2048```
+
+Key considerations for algorithm "ECDSA" ≥ secp384r1<br/>
+List ECDSA the supported curves (openssl ecparam -list_curves)<br/>
+```openssl ecparam -genkey -name secp384r1 -out server.key```
+
+Generation of self-signed(x509) public key (PEM-encodings .pem|.crt) based on the private (.key)<br/>
+```openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650```
+
+##### simple GO https/TLS server
+file: `src/nginx/simple/https`
+
+>TLS Server
+
+[Ref-Github-Gist](https://gist.github.com/denji/12b3a568f092ab951456)
+`src/nginx/server`<br/>
+`src/nginx/client`<br/>
+
+### Note
+the Go file name rule I do not know yet
 
 the file tree of Go not like Java
 src & bin & pkg
