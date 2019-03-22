@@ -32,6 +32,10 @@ like C, `printf("this is a int %d", 100)`, in Go, `fmt.Printf(this is a int %d",
 the package dependency, like gradle lib
 
 ### Nginx
+download Nginx
+[Install-with-brew](https://coderwall.com/p/dgwwuq/installing-nginx-in-mac-os-x-maverick-with-homebrew)
+the config is here: `/usr/local/etc/nginx/nginx.conf`
+
 to review [this blog](https://www.jianshu.com/p/33d4a3fdc483) to check Nginx config
 
 append the extra virtual server below default server
@@ -51,13 +55,20 @@ append the extra virtual server below default server
         listen 8091;
         root   html;
         index  index.html index.htm index.php;
-        ## send request back to apache ##
+        # send request back to your server
         location / {
-            #go 服务器可以指定到其他的机器上，这里设定本机服务器
+            # go, the local host
             proxy_pass  http://localhost:9090;
        }
     }
 ```
+
+// some nginx command maybe useful
+`nginx`
+`nginx -s stop`
+`nginx -s reload`
+`nginx -h`
+
  
  ### Note
  the Go file name rule I do not know yet
