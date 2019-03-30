@@ -30,6 +30,7 @@ like C, `printf("this is a int %d", 100)`, in Go, `fmt.Printf(this is a int %d",
 
  ### dep
 the package dependency, like gradle lib
+use this command `brew install dep` , and it will automatically to install the go latest version.
 
 ### Nginx
 download Nginx
