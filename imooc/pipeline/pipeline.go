@@ -1,12 +1,20 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 
-	"./nodes"
+	"golangLeraning/imooc/pipeline/nodes"
 )
 
 func main() {
+	// mergeDemo()
+	generateFile("small.in", 64)
+	// generateFile("large.in", 100000000)
+}
+
+func mergeDemo() {
 	// test mem sort
 	p := nodes.InMemSort(
 		nodes.ArraySource(3, 5, 6, 2, 1, 0, -1))
@@ -36,5 +44,40 @@ func main() {
 	for v := range p2 {
 		fmt.Println(v)
 	}
+}
 
+/**
+ * bufio.NewWriter for file, to increase the write speed
+ * Note: to use Flush method to flush the data in the buffer
+ */
+func generateFile(fileName string, n int) {
+	file, err := os.Create(fileName)
+	if err != nil {
+		panic(err)
+	}
+	// always close file, like Java finally block
+	defer file.Close()
+	p := nodes.RandomSource(n)
+
+	writer := bufio.NewWriter(file)
+	nodes.WriteSink(writer, p)
+	writer.Flush()
+
+	// file.Close()
+
+	file, err = os.Open(fileName)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+	// p = nodes.ReaderSource(bufio.NewReader(file))
+	p = nodes.ReaderSource(bufio.NewReader(file), -1)
+	count := 0
+	for v := range p {
+		fmt.Println(v)
+		count++
+		if count > 100 {
+			break
+		}
+	}
 }
