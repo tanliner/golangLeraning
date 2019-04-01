@@ -9,13 +9,20 @@ import (
 )
 
 func main() {
+	// please make sure you had run this code below, in 'imooc/pipeline/pipiline.go'
+	// generateFile("small.in", 64)
+	// generateFile("large.in", 100000000)
 	sort()
 }
 
 func sort()  {
-	fileName := "small.in"
-	fileNameOut := "small.out"
-	fileSize := 512
+	// fileName := "small.in"
+	// fileNameOut := "small.out"
+	// fileSize := 512
+
+	fileName := "large.in"
+	fileNameOut := "large.out"
+	fileSize := 800000000
 	chunkCount := 4
 	p := createPipeLine(fileName, fileSize, chunkCount)
 	writeToFile(p, fileNameOut)
@@ -28,6 +35,7 @@ func createPipeLine(
 	chunkSize := fileSize / chunkCount
 	// sortResults := [] <- chan int{}
 	var sortResults [] <-chan int
+	nodes.Init()
 
 	for i := 0; i < chunkCount; i++ {
 		file, err := os.Open(fileName)
@@ -60,8 +68,13 @@ func printFile(fileName string) {
 	}
 	defer file.Close()
 	p := nodes.ReaderSource(file, -1)
+	count := 0
 	for v := range p {
 		fmt.Println(v)
+		count++
+		if count > 100 {
+			break
+		}
 	}
 }
 

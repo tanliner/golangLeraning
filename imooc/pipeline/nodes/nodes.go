@@ -2,11 +2,18 @@ package nodes
 
 import (
 	"encoding/binary"
+	"fmt"
 	"io"
 	"math/rand"
 	"sort"
+	"time"
 )
 
+var startTime time.Time
+
+func Init()  {
+	startTime = time.Now()
+}
 /**
  * send array data
  */
@@ -28,12 +35,15 @@ func InMemSort(in <- chan int) <- chan int {
 	out := make(chan int)
 	go func() {
 		// Read into memory
-		a := []int {}
+		// a := []int {}
+		var a []int
 		for v := range in {
 			a = append(a, v)
 		}
+		fmt.Println("in mem sort Read done", time.Now().Sub(startTime))
 		// Sort
 		sort.Ints(a)
+		fmt.Println("in mem sort Sort done", time.Now().Sub(startTime))
 
 		// Output
 		for _, v := range a {
@@ -41,7 +51,7 @@ func InMemSort(in <- chan int) <- chan int {
 		}
 
 		close(out)
-
+		fmt.Println("in mem sort Merge done", time.Now().Sub(startTime))
 	}()
 	return out
 }
