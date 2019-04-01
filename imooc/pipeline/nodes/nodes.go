@@ -11,6 +11,11 @@ import (
 
 var startTime time.Time
 
+// you can check the img:
+// ${pro_root_path}/externalsort.jpg
+// ${pro_root_path}/externalsort-with-buffer.jpg
+const BUFFER_SIZE = 1024
+
 func Init()  {
 	startTime = time.Now()
 }
@@ -32,7 +37,7 @@ func ArraySource(a ...int) <- chan int {
  * read data from in and send to out
  */
 func InMemSort(in <- chan int) <- chan int {
-	out := make(chan int)
+	out := make(chan int, BUFFER_SIZE)
 	go func() {
 		// Read into memory
 		// a := []int {}
@@ -57,7 +62,7 @@ func InMemSort(in <- chan int) <- chan int {
 }
 
 func Merge(in1, in2 <- chan int) <- chan int  {
-	out := make(chan int)
+	out := make(chan int, BUFFER_SIZE)
 	go func() {
 		v1, ok1 := <- in1
 		v2, ok2 := <- in2
@@ -96,7 +101,7 @@ func ReaderSource2(reader io.Reader) <- chan int {
 }
 
 func ReaderSource(reader io.Reader, chunkSize int) <- chan int {
-	out := make(chan int)
+	out := make(chan int, BUFFER_SIZE)
 	go func() {
 		buffer := make([]byte, 8)
 		bytesRead := 0
