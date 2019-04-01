@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 
 	"golangLeraning/imooc/pipeline/nodes"
 )
@@ -24,11 +25,15 @@ func sort()  {
 	fileNameOut := "large.out"
 	fileSize := 800000000
 	chunkCount := 4
-	p := createPipeLine(fileName, fileSize, chunkCount)
+	// p := createPipeLine(fileName, fileSize, chunkCount)
+	p := createNetworkPipeLine(fileName, fileSize, chunkCount)
 	writeToFile(p, fileNameOut)
 	printFile(fileNameOut)
 }
 
+/**
+ * local node
+ */
 func createPipeLine(
 	fileName string,
 	fileSize, chunkCount int) <- chan int {
@@ -45,6 +50,36 @@ func createPipeLine(
 		file.Seek(int64(i * chunkSize), 0)
 		source := nodes.ReaderSource(bufio.NewReader(file), chunkSize)
 		sortResults = append(sortResults, nodes.InMemSort(source))
+	}
+	return nodes.MergeN(sortResults...)
+}
+
+/**
+ * net nodes
+ */
+func createNetworkPipeLine(
+	fileName string,
+	fileSize, chunkCount int) <- chan int {
+	chunkSize := fileSize / chunkCount
+	// sortResults := [] <- chan int{}
+	var sortResults [] <-chan int
+	nodes.Init()
+
+	var sortAddr []string
+	for i := 0; i < chunkCount; i++ {
+		file, err := os.Open(fileName)
+		if err != nil {
+			panic(err)
+		}
+		file.Seek(int64(i * chunkSize), 0)
+		source := nodes.ReaderSource(bufio.NewReader(file), chunkSize)
+		// sortResults = append(sortResults, nodes.InMemSort(source))
+		addr := ":" + strconv.Itoa(9000 + i)
+		nodes.NetworkSink(addr, nodes.InMemSort(source))
+		sortAddr = append(sortAddr, addr)
+	}
+	for _, addr := range sortAddr {
+		sortResults = append(sortResults, nodes.NetworkSource(addr))
 	}
 	return nodes.MergeN(sortResults...)
 }
